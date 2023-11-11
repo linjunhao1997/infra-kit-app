@@ -112,7 +112,7 @@ export default function GroupTable() {
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
     axios({
       method: "get",
-      url: "/apis/v1/services/iam/groups",
+      url: "/apis/v1/services/iam/namespaces",
       params: {
         pageSize: fetchDataOptions.pageSize,
       },
@@ -123,13 +123,9 @@ export default function GroupTable() {
     return <div>error</div>;
   }
   if (dataQuery.isFetching) {
-    return (
-      <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-        <CircularProgress variant="soft" />
-      </Box>
-    );
+    return <CircularProgress />
   }
-
+  
   const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
 
   const renderFilters = () => (

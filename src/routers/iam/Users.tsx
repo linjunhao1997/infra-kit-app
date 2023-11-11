@@ -8,9 +8,9 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
-import GroupTable from '../components/GroupTable';
+import UserTable from '@/components/UserTable';
 
-export default function Groups() {
+export default function Users() {
 return (
     <Box
     component="main"
@@ -60,10 +60,10 @@ return (
           fontSize={12}
           fontWeight={500}
         >
-          Dashboard
+          身份与访问
         </Link>
         <Typography color="primary" fontWeight={500} fontSize={12}>
-          Orders
+          用户
         </Typography>
       </Breadcrumbs>
     </Box>
@@ -78,7 +78,7 @@ return (
         justifyContent: 'space-between',
       }}
     >
-      <Typography level="h2">Orders</Typography>
+      <Typography level="h2">用户</Typography>
       <Button
         color="primary"
         startDecorator={<DownloadRoundedIcon />}
@@ -87,7 +87,7 @@ return (
         Download PDF
       </Button>
     </Box>
-    <GroupTable />
+    <UserTable />
   </Box>
 )
 }

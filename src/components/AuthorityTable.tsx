@@ -2,6 +2,7 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
+
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -10,6 +11,7 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -36,6 +38,189 @@ interface GroupRow {
   ctime: string;
   mtime: string;
 }
+
+/* const rows = [
+  {
+    id: 'INV-1234',
+    date: 'Feb 3, 2023',
+    status: 'Refunded',
+    customer: {
+      initial: 'O',
+      name: 'Olivia Ryhe',
+      email: 'olivia@email.com',
+    },
+  },
+  {
+    id: 'INV-1233',
+    date: 'Feb 3, 2023',
+    status: 'Paid',
+    customer: {
+      initial: 'S',
+      name: 'Steve Hampton',
+      email: 'steve.hamp@email.com',
+    },
+  },
+  {
+    id: 'INV-1232',
+    date: 'Feb 3, 2023',
+    status: 'Refunded',
+    customer: {
+      initial: 'C',
+      name: 'Ciaran Murray',
+      email: 'ciaran.murray@email.com',
+    },
+  },
+  {
+    id: 'INV-1231',
+    date: 'Feb 3, 2023',
+    status: 'Refunded',
+    customer: {
+      initial: 'M',
+      name: 'Maria Macdonald',
+      email: 'maria.mc@email.com',
+    },
+  },
+  {
+    id: 'INV-1230',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'C',
+      name: 'Charles Fulton',
+      email: 'fulton@email.com',
+    },
+  },
+  {
+    id: 'INV-1229',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'J',
+      name: 'Jay Hooper',
+      email: 'hooper@email.com',
+    },
+  },
+  {
+    id: 'INV-1228',
+    date: 'Feb 3, 2023',
+    status: 'Refunded',
+    customer: {
+      initial: 'K',
+      name: 'Krystal Stevens',
+      email: 'k.stevens@email.com',
+    },
+  },
+  {
+    id: 'INV-1227',
+    date: 'Feb 3, 2023',
+    status: 'Paid',
+    customer: {
+      initial: 'S',
+      name: 'Sachin Flynn',
+      email: 's.flyn@email.com',
+    },
+  },
+  {
+    id: 'INV-1226',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'B',
+      name: 'Bradley Rosales',
+      email: 'brad123@email.com',
+    },
+  },
+  {
+    id: 'INV-1234',
+    date: 'Feb 3, 2023',
+    status: 'Paid',
+    customer: {
+      initial: 'O',
+      name: 'Olivia Ryhe',
+      email: 'olivia@email.com',
+    },
+  },
+  {
+    id: 'INV-1233',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'S',
+      name: 'Steve Hampton',
+      email: 'steve.hamp@email.com',
+    },
+  },
+  {
+    id: 'INV-1232',
+    date: 'Feb 3, 2023',
+    status: 'Paid',
+    customer: {
+      initial: 'C',
+      name: 'Ciaran Murray',
+      email: 'ciaran.murray@email.com',
+    },
+  },
+  {
+    id: 'INV-1231',
+    date: 'Feb 3, 2023',
+    status: 'Refunded',
+    customer: {
+      initial: 'M',
+      name: 'Maria Macdonald',
+      email: 'maria.mc@email.com',
+    },
+  },
+  {
+    id: 'INV-1230',
+    date: 'Feb 3, 2023',
+    status: 'Paid',
+    customer: {
+      initial: 'C',
+      name: 'Charles Fulton',
+      email: 'fulton@email.com',
+    },
+  },
+  {
+    id: 'INV-1229',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'J',
+      name: 'Jay Hooper',
+      email: 'hooper@email.com',
+    },
+  },
+  {
+    id: 'INV-1228',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'K',
+      name: 'Krystal Stevens',
+      email: 'k.stevens@email.com',
+    },
+  },
+  {
+    id: 'INV-1227',
+    date: 'Feb 3, 2023',
+    status: 'Paid',
+    customer: {
+      initial: 'S',
+      name: 'Sachin Flynn',
+      email: 's.flyn@email.com',
+    },
+  },
+  {
+    id: 'INV-1226',
+    date: 'Feb 3, 2023',
+    status: 'Cancelled',
+    customer: {
+      initial: 'B',
+      name: 'Bradley Rosales',
+      email: 'brad123@email.com',
+    },
+  },
+]; */
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -112,22 +297,17 @@ export default function GroupTable() {
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
     axios({
       method: "get",
-      url: "/apis/v1/services/iam/groups",
+      url: "/apis/v1/services/iam/authorities",
       params: {
         pageSize: fetchDataOptions.pageSize,
       },
     })
   );
-
   if (dataQuery.isError) {
     return <div>error</div>;
   }
   if (dataQuery.isFetching) {
-    return (
-      <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-        <CircularProgress variant="soft" />
-      </Box>
-    );
+    return <CircularProgress />
   }
 
   const rows: GroupRow[] = dataQuery.data?.data.items ?? [];

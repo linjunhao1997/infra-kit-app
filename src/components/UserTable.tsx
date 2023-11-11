@@ -10,6 +10,7 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -25,7 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../utils/axios";
+import axios from "@/utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
 
@@ -112,7 +113,7 @@ export default function GroupTable() {
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
     axios({
       method: "get",
-      url: "/apis/v1/services/iam/groups",
+      url: "/apis/v1/services/iam/users",
       params: {
         pageSize: fetchDataOptions.pageSize,
       },
@@ -123,11 +124,7 @@ export default function GroupTable() {
     return <div>error</div>;
   }
   if (dataQuery.isFetching) {
-    return (
-      <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-        <CircularProgress variant="soft" />
-      </Box>
-    );
+    return <CircularProgress />
   }
 
   const rows: GroupRow[] = dataQuery.data?.data.items ?? [];

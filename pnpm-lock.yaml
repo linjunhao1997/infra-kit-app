@@ -35,6 +35,9 @@ dependencies:
   '@reduxjs/toolkit':
     specifier: ^1.9.7
     version: 1.9.7(react-redux@8.1.1)(react@18.2.0)
+  '@types/node':
+    specifier: ^20.9.0
+    version: 20.9.0
   axios:
     specifier: ^1.5.1
     version: 1.5.1
@@ -99,7 +102,7 @@ devDependencies:
     version: 5.0.2
   vite:
     specifier: ^4.4.5
-    version: 4.4.5(sass@1.69.4)
+    version: 4.4.5(@types/node@20.9.0)(sass@1.69.4)
 
 packages:
 
@@ -1304,6 +1307,11 @@ packages:
     resolution: {integrity: sha512-U3PUjAudAdJBeC2pgN8uTIKgxrb4nlDF3SF0++EldXQvQBGkpFZMSnwQiIoDU77tv45VgNkl/L4ouD+rEomujw==}
     dev: true
 
+  /@types/node@20.9.0:
+    resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==}
+    dependencies:
+      undici-types: 5.26.5
+
   /@types/parse-json@4.0.1:
     resolution: {integrity: sha512-3YmXzzPAdOTVljVMkTMBdBEvlOLg2cDQaDhnnhT3nT9uDbnJzjWhKlzb+desT12Y7tGqaN6d+AbozcKzyL36Ng==}
     dev: false
@@ -1488,7 +1496,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.23.2)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.23.2)
       react-refresh: 0.14.0
-      vite: 4.4.5(sass@1.69.4)
+      vite: 4.4.5(@types/node@20.9.0)(sass@1.69.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3025,6 +3033,9 @@ packages:
       react: 18.2.0
     dev: false
 
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   /unload@2.2.0:
     resolution: {integrity: sha512-B60uB5TNBLtN6/LsgAf3udH9saB5p7gqJwcFfbOEZ8BcBHnGwCf6G/TGiEqkRAxX7zAFIUtzdrXQSdL3Q/wqNA==}
     dependencies:
@@ -3057,7 +3068,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /vite@4.4.5(sass@1.69.4):
+  /vite@4.4.5(@types/node@20.9.0)(sass@1.69.4):
     resolution: {integrity: sha512-4m5kEtAWHYr0O1Fu7rZp64CfO1PsRGZlD3TAB32UmQlpd7qg15VF7ROqGN5CyqN7HFuwr7ICNM2+fDWRqFEKaA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -3085,6 +3096,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 20.9.0
       esbuild: 0.18.20
       postcss: 8.4.31
       rollup: 3.29.4

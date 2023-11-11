@@ -1,7 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
+import { ColorPaletteProp } from "@mui/joy/styles";
+import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
+import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -10,6 +13,8 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -112,7 +117,7 @@ export default function GroupTable() {
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
     axios({
       method: "get",
-      url: "/apis/v1/services/iam/groups",
+      url: "/apis/v1/services/iam/orgs",
       params: {
         pageSize: fetchDataOptions.pageSize,
       },
@@ -123,11 +128,7 @@ export default function GroupTable() {
     return <div>error</div>;
   }
   if (dataQuery.isFetching) {
-    return (
-      <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-        <CircularProgress variant="soft" />
-      </Box>
-    );
+    return <CircularProgress />
   }
 
   const rows: GroupRow[] = dataQuery.data?.data.items ?? [];

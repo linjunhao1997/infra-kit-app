@@ -17,12 +17,9 @@ import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import SupportRoundedIcon from '@mui/icons-material/SupportRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -32,6 +29,23 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
+import { useNavigate } from 'react-router-dom';
+import { RouterPaths } from '../routers/path';
+
+interface SelectedButtom {
+  isShowOrg: boolean
+  isShowUser: boolean
+  isShowAuthority: boolean
+  isShowGroup: boolean
+  isShowNamespace: boolean
+}
+let defaultSelecteds = {
+  isShowAuthority: false,
+  isShowGroup: false,
+  isShowOrg: false,
+  isShowNamespace: false,
+  isShowUser: false
+}
 
 function Toggler({
   defaultExpanded = false,
@@ -66,6 +80,9 @@ function Toggler({
 }
 
 export default function Sidebar() {
+  const navigate = useNavigate()
+  const [selecteds, setSelecteds] = React.useState<SelectedButtom>(defaultSelecteds);
+
   return (
     <Sheet
       className="Sidebar"
@@ -149,40 +166,13 @@ export default function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
-          <ListItem>
-            <ListItemButton>
-              <HomeRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Home</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <DashboardRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Dashboard</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton selected>
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Orders</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
           <ListItem nested>
             <Toggler
               renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
+                <ListItemButton onClick={() => {setOpen(!open); setSelecteds(defaultSelecteds)}}>
                   <AssignmentRoundedIcon />
                   <ListItemContent>
-                    <Typography level="title-sm">Tasks</Typography>
+                    <Typography level="title-sm">身份与访问</Typography>
                   </ListItemContent>
                   <KeyboardArrowDownIcon
                     sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
@@ -192,19 +182,28 @@ export default function Sidebar() {
             >
               <List sx={{ gap: 0.5 }}>
                 <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>All tasks</ListItemButton>
+                  <ListItemButton selected = {selecteds?.isShowOrg} onClick={() => {setSelecteds({...defaultSelecteds, isShowOrg: true}); navigate(RouterPaths.orgs)}}>组织</ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>Backlog</ListItemButton>
+                  <ListItemButton selected = {selecteds?.isShowUser} onClick={() => {setSelecteds({...defaultSelecteds, isShowUser: true}); navigate(RouterPaths.users)}}>用户</ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>In progress</ListItemButton>
+                  <ListItemButton selected = {selecteds?.isShowNamespace} onClick={() => {setSelecteds({...defaultSelecteds, isShowNamespace: true}); navigate(RouterPaths.namespaces)}}>命名空间</ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>Done</ListItemButton>
+                  <ListItemButton selected = {selecteds?.isShowAuthority} onClick={() => {setSelecteds({...defaultSelecteds, isShowAuthority: true}); navigate(RouterPaths.authorities)}}>权限</ListItemButton>
+                </ListItem>
+                <ListItem>
+                  <ListItemButton selected = {selecteds?.isShowGroup} onClick={() => {setSelecteds({...defaultSelecteds, isShowGroup: true}); navigate(RouterPaths.groups)}}>用户组</ListItemButton>
                 </ListItem>
               </List>
             </Toggler>
+            <ListItemButton>
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Orders</Typography>
+              </ListItemContent>
+            </ListItemButton>
           </ListItem>
 
           <ListItem>
@@ -221,40 +220,6 @@ export default function Sidebar() {
                 4
               </Chip>
             </ListItemButton>
-          </ListItem>
-
-          <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <GroupRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">Users</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton
-                    role="menuitem"
-                    component="a"
-                    href="/joy-ui/getting-started/templates/profile-dashboard/"
-                  >
-                    My profile
-                  </ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Create a new user</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Roles & permission</ListItemButton>
-                </ListItem>
-              </List>
-            </Toggler>
           </ListItem>
         </List>
 
