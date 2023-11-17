@@ -34,12 +34,10 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("error", error)
     const status = error?.response?.status;
     switch (status) {
       case 401:
         localStorage.removeItem("Access-Token");
-        return Promise.reject(error);
     }
     return Promise.reject(error);
   }

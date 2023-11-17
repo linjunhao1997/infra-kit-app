@@ -30,6 +30,10 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import axios from "../utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
+import Alert from "@mui/joy/Alert";
+import toast from "react-hot-toast";
+import ReportIcon from "@mui/icons-material/Report";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 interface GroupRow {
   id: string;
@@ -285,7 +289,7 @@ function RowMenu() {
   );
 }
 
-export default function GroupTable() {
+export default function AuthorityTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
@@ -301,10 +305,38 @@ export default function GroupTable() {
       params: {
         pageSize: fetchDataOptions.pageSize,
       },
-    })
+    }), {
+      retry: false
+    }
   );
   if (dataQuery.isError) {
-    return <div>error</div>;
+    console.log("heehe", dataQuery.error?.response?.data?.message)
+    if (dataQuery.error?.response?.status === 403) {
+        return "暂无权限"   
+    } else {
+      toast.custom((t) => (
+        <Alert
+          key={""}
+          sx={{ alignItems: "flex-start" }}
+          startDecorator={<ReportIcon />}
+          variant="soft"
+          color={"warning"}
+          endDecorator={
+            <IconButton variant="soft" color={"warning"}>
+              <CloseRoundedIcon />
+            </IconButton>
+          }
+        >
+          <div>
+            <div>访问失败</div>
+            <Typography level="body-sm" color={"warning"}>
+              {dataQuery.data?.data.message}
+            </Typography>
+          </div>
+        </Alert>
+      ));
+      return <div>访问失败</div>;
+    }
   }
   if (dataQuery.isFetching) {
     return <CircularProgress />

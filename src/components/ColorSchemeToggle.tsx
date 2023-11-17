@@ -44,7 +44,7 @@ export default function ColorSchemeToggle({
       }}
       sx={[
         {
-          '& > *:first-child': {
+          '& > *:first-of-type': {
             display: mode === 'dark' ? 'none' : 'initial',
           },
           '& > *:last-child': {

@@ -28,6 +28,10 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import axios from "../utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
+import toast from "react-hot-toast";
+import Alert from "@mui/joy/Alert";
+import ReportIcon from "@mui/icons-material/Report";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 interface GroupRow {
   id: string;
@@ -120,11 +124,41 @@ export default function GroupTable() {
   );
 
   if (dataQuery.isError) {
-    return <div>error</div>;
+    toast.custom((t) => (
+      <Alert
+        key={""}
+        sx={{ alignItems: "flex-start" }}
+        startDecorator={<ReportIcon />}
+        variant="soft"
+        color={"warning"}
+        endDecorator={
+          <IconButton variant="soft" color={"warning"}>
+            <CloseRoundedIcon />
+          </IconButton>
+        }
+      >
+        <div>
+          <div>访问失败</div>
+          <Typography level="body-sm" color={"warning"}>
+            {dataQuery.data?.data.message}
+          </Typography>
+        </div>
+      </Alert>
+    ));
+    return <div>访问失败</div>;
   }
   if (dataQuery.isFetching) {
     return (
-      <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box
+        sx={{
+          display: "flex",
+          height: "100%",
+          justifyContent: "center",
+          gap: 2,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <CircularProgress variant="soft" />
       </Box>
     );
@@ -332,7 +366,7 @@ export default function GroupTable() {
                 <td>
                   <Typography level="body-xs">{row.mtime}</Typography>
                 </td>
-            
+
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Link level="body-xs" component="button">
