@@ -12,11 +12,18 @@ import LoginPage from "./pages/LoginPage";
 import { Provider } from "react-redux";
 import store from "./store";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { RouteObject, Link, useRoutes, Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
-import Orgs from "./routers/iam/Orgs";
-import Users from "./routers/iam/Users";
-import Authorities from "./routers/iam/Authorities";
-import Namespaces from "./routers/iam/Namespaces";
+import {
+  Link,
+  NavLink,
+  Navigate,
+  Outlet,
+  createBrowserRouter,
+  useNavigate,
+} from "react-router-dom";
+import Orgs from "./components/iam/Orgs";
+import Users from "./components/iam/Users";
+import Authorities from "./components/iam/Authorities";
+import Namespaces from "./components/iam/Namespaces";
 import toast, { Toaster } from "react-hot-toast";
 import Alert from "@mui/joy/Alert";
 import ReportIcon from "@mui/icons-material/Report";
@@ -25,7 +32,7 @@ import IconButton from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
 import GroupEditor from "@/components/GroupEditor";
 import GroupTable from "@/components/GroupTable";
-import Groups from "./routers/iam/Groups";
+import Groups from "./components/iam/Groups";
 import OrgTable from "./components/OrgTable";
 import AuthorityTable from "./components/AuthorityTable";
 import NamespaceTable from "./components/NamespaceTable";
@@ -43,74 +50,65 @@ export const paths = {
   orders: "/iam/orders",
 };
 
-export const Routes = createBrowserRouter( [
+export const Routes = createBrowserRouter([
   {
     path: "/",
-    element: <JoyOrderDashboardTemplate/>,
+    element: <JoyOrderDashboardTemplate />,
     handle: {
       crumb: () => (
-        <CrumbLink
-          underline="hover"
-          color="neutral"
-          href="/"
-          aria-label="Home"
-        >
+        <CrumbLink underline="hover" color="neutral" href="/" aria-label="Home">
           <HomeRoundedIcon />
         </CrumbLink>
       ),
     },
     children: [
-      { index: true, element: <Home /> },
       {
-        path: RouterPaths.groups,
-        element: <Groups />,
+        element: <IAM />,
         handle: {
           crumb: () => (
             <CrumbLink
               underline="none"
               color="neutral"
-              href="/iam/groups"
-              aria-label="groups"
+              href="#"
+              aria-label="iam"
             >
               身份与访问
             </CrumbLink>
           ),
         },
-        children: [
-          {
-            index: true,
-            handle: {
-              crumb: () => (
-                <CrumbLink
-                  underline="hover"
-                  color="neutral"
-                  href="/iam/groups"
-                  aria-label="groups"
-                >
-                  用户组
-                </CrumbLink>
-              ),
-            },
-            element: <GroupTable />,
+        children: [{
+          path: RouterPaths.groups,
+          element: <Groups />,
+          handle: {
+            crumb: () => (
+              <Link to= {paths.groups} style={{textDecoration: 'inherit', color: "inherit"}}>用户组</Link>
+            ),
           },
-          {
-            path: ":id",
-            handle: {
-              crumb: () => (
-                <CrumbLink
-                  underline="none"
-                  color="neutral"
-                  href="#"
-                  aria-label="groups"
-                >
-                  编辑
-                </CrumbLink>
-              ),
+          children: [
+            {
+              index: true,
+              element: <GroupTable />,
             },
-            element: <GroupEditor />,
-          },
-        ],
+            {
+              path: ":id",
+              element: <GroupEditor />,
+              handle: {
+                crumb: () => (
+                  <CrumbLink
+                    underline="none"
+                    color="neutral"
+                    href="#"
+                    aria-label="edit"
+                  >
+                    编辑
+                  </CrumbLink>
+                ),
+              },
+            },
+          ],
+        }]
       },
+      
       {
         path: RouterPaths.orgs,
         element: <Orgs />,
@@ -136,11 +134,9 @@ export const Routes = createBrowserRouter( [
   },
 ]);
 
-function Home() {
+function IAM() {
   return (
-    <div>
-      <h2>Home</h2>
-    </div>
+    <Outlet />
   );
 }
 
@@ -205,17 +201,15 @@ export default function JoyOrderDashboardTemplate() {
   }, [status]);
 
   function Dashboard() {
-    
-
     return (
-        <CssVarsProvider disableTransitionOnChange>
+      <CssVarsProvider disableTransitionOnChange>
         <CssBaseline />
         <Box sx={{ display: "flex", minHeight: "100dvh" }}>
           <Header />
           <Sidebar />
           <Outlet />
         </Box>
-      </CssVarsProvider>      
+      </CssVarsProvider>
     );
   }
 

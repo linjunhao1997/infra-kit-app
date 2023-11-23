@@ -1,16 +1,11 @@
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
 // icons
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 
-import GroupTable from "@/components/GroupTable";
-import { NavLink, Outlet, useMatch, useMatches } from "react-router-dom";
-import RouterBreadCrumbs from "@/components/Breadcrumbs";
+import {  Outlet } from "react-router-dom";
+import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
 
 export default function Groups() {
   return (
@@ -41,15 +36,7 @@ export default function Groups() {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Breadcrumbs
-          size="sm"
-          aria-label="breadcrumbs"
-          separator={<ChevronRightRoundedIcon fontSize="sm" />}
-          sx={{ pl: 0 }}
-        >
-        
-            <RouterBreadCrumbs/>
-        </Breadcrumbs>
+        <RouterBreadCrumbs />
       </Box>
       <Box
         sx={{

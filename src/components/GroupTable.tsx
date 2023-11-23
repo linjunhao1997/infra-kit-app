@@ -32,6 +32,8 @@ import toast from "react-hot-toast";
 import Alert from "@mui/joy/Alert";
 import ReportIcon from "@mui/icons-material/Report";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/App";
 
 interface GroupRow {
   id: string;
@@ -85,6 +87,8 @@ function stableSort<T>(
 }
 
 function RowMenu() {
+  const navigate = useNavigate()
+
   return (
     <Dropdown>
       <MenuButton
@@ -94,7 +98,7 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+        <MenuItem onClick={() => {navigate(paths.groups + "/123")}}>Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />

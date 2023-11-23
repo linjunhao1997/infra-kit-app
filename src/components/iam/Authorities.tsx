@@ -1,12 +1,9 @@
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
-import Breadcrumbs from '@mui/joy/Breadcrumbs';
-import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-// icons
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
+
 
 import AuthorityTable from '@/components/AuthorityTable';
 
@@ -38,35 +35,9 @@ return (
       gap: 1,
     }}
   >
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Breadcrumbs
-        size="sm"
-        aria-label="breadcrumbs"
-        separator={<ChevronRightRoundedIcon fontSize="sm" />}
-        sx={{ pl: 0 }}
-      >
-        <Link
-          underline="none"
-          color="neutral"
-          href="#some-link"
-          aria-label="Home"
-        >
-          <HomeRoundedIcon />
-        </Link>
-        <Link
-          underline="hover"
-          color="neutral"
-          href="#some-link"
-          fontSize={12}
-          fontWeight={500}
-        >
-          身份与访问
-        </Link>
-        <Typography color="primary" fontWeight={500} fontSize={12}>
-          权限
-        </Typography>
-      </Breadcrumbs>
-    </Box>
+     <Box sx={{ display: "flex", alignItems: "center" }}>
+        <RouterBreadCrumbs />
+      </Box>
     <Box
       sx={{
         display: 'flex',
