@@ -86,7 +86,10 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
+interface RowMenuProps {
+  id: string
+}
+function RowMenu({id}: RowMenuProps) {
   const navigate = useNavigate()
 
   return (
@@ -98,7 +101,7 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem onClick={() => {navigate(paths.groups + "/123")}}>Edit</MenuItem>
+        <MenuItem onClick={() => {navigate(paths.groups + "/" + id)}}>Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -376,7 +379,7 @@ export default function GroupTable() {
                     <Link level="body-xs" component="button">
                       Download
                     </Link>
-                    <RowMenu />
+                    <RowMenu id={row.id}/>
                   </Box>
                 </td>
               </tr>
