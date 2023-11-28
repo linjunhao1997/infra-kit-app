@@ -30,8 +30,8 @@ axios.interceptors.request.use((config) => {
 
 // 对返回的结果做处理
 axios.interceptors.response.use(
-  (response) => {
-    return response;
+  (res) => {
+    return res;
   },
   (error) => {
     const status = error?.response?.status;
