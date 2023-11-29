@@ -12,22 +12,13 @@ import LoginPage from "./pages/LoginPage";
 import { Provider } from "react-redux";
 import store from "./store";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {
-  Link,
-  Outlet,
-  createBrowserRouter,
-} from "react-router-dom";
+import { Link, Outlet, createBrowserRouter } from "react-router-dom";
 import Orgs from "./components/iam/Orgs";
 import Users from "./components/iam/Users";
 import Authorities from "./components/iam/Authorities";
 import Namespaces from "./components/iam/Namespaces";
 import toast, { Toaster } from "react-hot-toast";
-import Alert from "@mui/joy/Alert";
-import ReportIcon from "@mui/icons-material/Report";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import IconButton from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
-import GroupEditor from "@/components/GroupEditor";
+import GroupUpdater from "@/components/GroupUpdater";
 import GroupTable from "@/components/GroupTable";
 import Groups from "./components/iam/Groups";
 import OrgTable from "./components/OrgTable";
@@ -73,39 +64,46 @@ export const Routes = createBrowserRouter([
             </CrumbLink>
           ),
         },
-        children: [{
-          path: RouterPaths.groups,
-          element: <Groups />,
-          handle: {
-            crumb: () => (
-              <Link to= {paths.groups} style={{textDecoration: 'inherit', color: "inherit"}}>用户组</Link>
-            ),
-          },
-          children: [
-            {
-              index: true,
-              element: <GroupTable />,
+        children: [
+          {
+            path: RouterPaths.groups,
+            element: <Groups />,
+            handle: {
+              crumb: () => (
+                <Link
+                  to={paths.groups}
+                  style={{ textDecoration: "inherit", color: "inherit" }}
+                >
+                  用户组
+                </Link>
+              ),
             },
-            {
-              path: ":id",
-              element: <GroupEditor />,
-              handle: {
-                crumb: () => (
-                  <CrumbLink
-                    underline="none"
-                    color="neutral"
-                    href="#"
-                    aria-label="edit"
-                  >
-                    编辑
-                  </CrumbLink>
-                ),
+            children: [
+              {
+                index: true,
+                element: <GroupTable />,
               },
-            },
-          ],
-        }]
+              {
+                path: ":id",
+                element: <GroupUpdater />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      编辑
+                    </CrumbLink>
+                  ),
+                },
+              },
+            ],
+          },
+        ],
       },
-      
+
       {
         path: RouterPaths.orgs,
         element: <Orgs />,
@@ -132,9 +130,7 @@ export const Routes = createBrowserRouter([
 ]);
 
 function IAM() {
-  return (
-    <Outlet />
-  );
+  return <Outlet />;
 }
 
 function NoMatch() {
@@ -161,27 +157,16 @@ export default function JoyOrderDashboardTemplate() {
           );
         },
         onError(error) {
-          toast.custom((t) => (
-            <Alert
-              key={""}
-              sx={{ alignItems: "flex-start" }}
-              startDecorator={<ReportIcon />}
-              variant="soft"
-              color={"warning"}
-              endDecorator={
-                <IconButton variant="soft" color={"warning"}>
-                  <CloseRoundedIcon />
-                </IconButton>
-              }
-            >
-              <div>
-                <div>访问失败</div>
-                <Typography level="body-sm" color={"warning"}>
-                  {error?.response?.data?.message}
-                </Typography>
-              </div>
-            </Alert>
-          ));
+          toast.error(
+            error?.response?.statusText +
+              " " +
+              (error?.response?.data?.message || "请求异常")
+          );
+        },
+      },
+      mutations: {
+        onSuccess() {
+          toast.success("success");
         },
       },
     },

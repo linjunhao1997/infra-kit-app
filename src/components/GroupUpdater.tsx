@@ -2,18 +2,20 @@ import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
 import Input from "@mui/joy/Input";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import axios from "@/utils/axios";
 import CircularProgress from "@mui/joy/CircularProgress";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Typography from "@mui/joy/Typography";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import Checkbox from "@mui/joy/Checkbox";
 import { listAuthority } from "@/services";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
 
 interface ResData {
   id: string;
@@ -22,7 +24,9 @@ interface ResData {
   authorityIds: string[];
 }
 
-export default function GroupEditor() {
+export default function GroupUpdater() {
+  const navigate = useNavigate();
+
   let { id } = useParams();
   const dataQuery = useQuery(["data"], () =>
     axios({
@@ -31,40 +35,33 @@ export default function GroupEditor() {
       params: {
         withAuthorityIds: true,
       },
-    })
+    }), {
+      refetchOnMount: true,
+    }
   );
 
-  const [code, setCode] = React.useState<null | string>(null)
-  const [name, setName] = React.useState<null | string>(null)
-  const [addAuthorityIds,setAddAuthorityIds] = useState<string[]>([])
-  const [removeAuthorityIds,setRemoveAddAuthorityIds] = useState<string[]>([])
-
+  const [code, setCode] = React.useState<null | string>(null);
+  const [name, setName] = React.useState<null | string>(null);
+  const [addAuthorityIds, setAddAuthorityIds] = useState<string[]>([]);
+  const [removeAuthorityIds, setRemoveAddAuthorityIds] = useState<string[]>([]);
 
   const { isLoading: isUpdatingGroup, mutate: updateGroup } = useMutation<
     any,
     Error
-  >(
-    async () => {
-      return await axios({
-        method: "patch",
-        url: "/apis/v1/services/iam/groups/" + id,
-        data: {
-          code: code,
-          name: name,
-          addAuthorityIds: addAuthorityIds,
-          removeAuthorityIds: removeAuthorityIds,
-        },
-      });
-    },
-    {
-      onSuccess: (res) => {
-        //console.log(res)
+  >(() => {
+    return axios({
+      method: "patch",
+      url: "/apis/v1/services/iam/groups/" + id,
+      data: {
+        code: code,
+        name: name,
+        addAuthorityIds: addAuthorityIds,
+        removeAuthorityIds: removeAuthorityIds,
       },
-      onError: (err: any) => {
-        console.log(err);
-      },
-    }
-  );
+    }).then(() => {
+      dataQuery.refetch()
+    });
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -72,9 +69,9 @@ export default function GroupEditor() {
   };
 
   const setIds = (addAuthorityIds: string[], removeAuthorityIds: string[]) => {
-      setAddAuthorityIds(addAuthorityIds)
-      setRemoveAddAuthorityIds(removeAuthorityIds)
-  }
+    setAddAuthorityIds(addAuthorityIds);
+    setRemoveAddAuthorityIds(removeAuthorityIds);
+  };
 
   if (dataQuery.isFetching) {
     return (
@@ -96,33 +93,46 @@ export default function GroupEditor() {
   const resData: ResData = dataQuery.data?.data;
 
   return (
-    <form onSubmit={handleSubmit} id="demo">
-      <FormControl>
-        <FormLabel>标识</FormLabel>
-        <Input
-          placeholder="用户组标识"
-          defaultValue={resData.code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-        <FormHelperText>输入用户组标识.</FormHelperText>
-        <FormLabel>组名</FormLabel>
-        <Input
-          placeholder="用户组名"
-          defaultValue={resData.name}
-          onChange={(e) => setName(e.target.value )}
-        />
-        <FormHelperText>输入用户组名</FormHelperText>
+    <>
+      <span
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        <KeyboardBackspaceIcon color="primary" />
+      </span>
+      <form onSubmit={handleSubmit} id="demo">
+        <FormControl>
+          <FormLabel>标识</FormLabel>
+          <Input
+            placeholder="用户组标识"
+            defaultValue={resData.code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <FormHelperText>输入用户组标识.</FormHelperText>
+        </FormControl>
+        <FormControl>
+          <FormLabel>组名</FormLabel>
+          <Input
+            placeholder="用户组名"
+            defaultValue={resData.name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <FormHelperText>输入用户组名</FormHelperText>
+        </FormControl>
+
         <Authorities checkedIds={resData.authorityIds} setIds={setIds} />
         <Button
-          variant="solid"
-          color="primary"
-          loading={isUpdatingGroup}
-          type="submit"
-        >
-          保存
-        </Button>
-      </FormControl>
-    </form>
+        variant="solid"
+        color="primary"
+        loading={isUpdatingGroup}
+        type="submit"
+      >
+        保存
+      </Button>
+      </form>
+     
+    </>
   );
 }
 
@@ -146,9 +156,6 @@ function Authorities({ checkedIds, setIds }: AuthoritiesProps) {
       ({ pageParam = "" }) => fetchRepositories(pageParam),
       {
         getNextPageParam: (lastPage, allPages) => {
-          console.log("lastPage", lastPage);
-          console.log("allPages", allPages);
-
           if (lastPage?.pagination.nextPageToken === "") {
             return undefined;
           }
@@ -156,9 +163,6 @@ function Authorities({ checkedIds, setIds }: AuthoritiesProps) {
         },
       }
     );
-
-  console.log("add", addAuthorityIds);
-  console.log("remove", removeAuthorityIds);
 
   return (
     <div>
@@ -178,7 +182,7 @@ function Authorities({ checkedIds, setIds }: AuthoritiesProps) {
                       removeAuthorityIds.push(data?.id);
                       const set = new Set(removeAuthorityIds);
                       setRemoveAuthorityIds([...set]);
-                      setIds(addAuthorityIds, [...set])
+                      setIds(addAuthorityIds, [...set]);
                     } else if (
                       !checkedIdSet.has(data?.id) &&
                       e.target.checked
@@ -186,8 +190,7 @@ function Authorities({ checkedIds, setIds }: AuthoritiesProps) {
                       addAuthorityIds.push(data?.id);
                       const set = new Set(addAuthorityIds);
                       setAddAuthorityIds([...set]);
-                      setIds([...set], removeAuthorityIds)
-
+                      setIds([...set], removeAuthorityIds);
                     } else {
                       const addSet = new Set(addAuthorityIds);
                       addSet.delete(data?.id);
@@ -195,23 +198,24 @@ function Authorities({ checkedIds, setIds }: AuthoritiesProps) {
                       const removeSet = new Set(removeAuthorityIds);
                       removeSet.delete(data?.id);
                       setRemoveAuthorityIds([...removeSet]);
-                      setIds([...addSet], [...removeSet])
+                      setIds([...addSet], [...removeSet]);
                     }
                   }}
                 />
               </ListItem>
             ))
           )}
+          {hasNextPage ? (
+            <span
+              onClick={() => {
+                fetchNextPage();
+              }}
+            >
+              <MoreHorizSharpIcon titleAccess="更多" />
+            </span>
+          ) : null}
         </List>
       </div>
-      <button
-        onClick={() => {
-          fetchNextPage();
-        }}
-      >
-        {" "}
-        更多
-      </button>
     </div>
   );
 }
