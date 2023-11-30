@@ -28,6 +28,7 @@ import UserTable from "./components/UserTable";
 import { RouterPaths } from "./routers/path";
 import CrumbLink from "@mui/joy/Link";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import AuthorityCreator from "./components/AuthorityCreator";
 
 export const paths = {
   groups: "/iam/groups",
@@ -95,6 +96,42 @@ export const Routes = createBrowserRouter([
                       aria-label="edit"
                     >
                       编辑
+                    </CrumbLink>
+                  ),
+                },
+              },
+            ],
+          },
+          {
+            path: RouterPaths.authorities,
+            element: <Authorities />,
+            handle: {
+              crumb: () => (
+                <Link
+                  to={paths.authorities}
+                  style={{ textDecoration: "inherit", color: "inherit" }}
+                >
+                  权限
+                </Link>
+              ),
+            },
+            children: [
+              {
+                index: true,
+                element: <AuthorityTable />,
+              },
+              {
+                path: "create",
+                element: <AuthorityCreator />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      新建
                     </CrumbLink>
                   ),
                 },

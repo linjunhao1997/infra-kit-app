@@ -1,13 +1,12 @@
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import Typography from '@mui/joy/Typography';
-import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
 
-
-import AuthorityTable from '@/components/AuthorityTable';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 export default function Authorities() {
+const navigate = useNavigate()
 return (
     <Box
     component="main"
@@ -50,15 +49,8 @@ return (
       }}
     >
       <Typography level="h2">权限</Typography>
-      <Button
-        color="primary"
-        startDecorator={<DownloadRoundedIcon />}
-        size="sm"
-      >
-        Download PDF
-      </Button>
     </Box>
-    <AuthorityTable />
+    <Outlet />
   </Box>
 )
 }

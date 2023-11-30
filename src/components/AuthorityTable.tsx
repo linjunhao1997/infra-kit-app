@@ -34,6 +34,9 @@ import Alert from "@mui/joy/Alert";
 import toast from "react-hot-toast";
 import ReportIcon from "@mui/icons-material/Report";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import AddSharpIcon from '@mui/icons-material/AddSharp';
+import { useNavigate } from "react-router-dom";
+
 
 interface GroupRow {
   id: string;
@@ -294,6 +297,8 @@ export default function AuthorityTable() {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
 
+  const navigate = useNavigate()
+
   const fetchDataOptions = {
     pageSize: 10,
   };
@@ -310,7 +315,6 @@ export default function AuthorityTable() {
     }
   );
   if (dataQuery.isError) {
-    console.log("heehe", dataQuery.error?.response?.data?.message)
     if (dataQuery.error?.response?.status === 403) {
         return "暂无权限"   
     } else {
@@ -456,6 +460,13 @@ export default function AuthorityTable() {
         </FormControl>
         {renderFilters()}
       </Box>
+      <Button
+        color="primary"
+        size="sm"
+        onClick={() => navigate('/iam/authorities/create')}
+      >
+        <AddSharpIcon />
+      </Button>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -468,6 +479,7 @@ export default function AuthorityTable() {
           minHeight: 0,
         }}
       >
+        
         <Table
           aria-labelledby="tableTitle"
           stickyHeader
