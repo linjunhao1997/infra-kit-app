@@ -1,10 +1,8 @@
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
 import Typography from '@mui/joy/Typography';
-import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
 
-import OrgTable from '@/components/OrgTable';
+import { Outlet } from 'react-router';
 
 export default function Orgs() {
 return (
@@ -49,15 +47,8 @@ return (
       }}
     >
       <Typography level="h2">组织</Typography>
-      <Button
-        color="primary"
-        startDecorator={<DownloadRoundedIcon />}
-        size="sm"
-      >
-        Download PDF
-      </Button>
     </Box>
-    <OrgTable />
+    <Outlet />
   </Box>
 )
 }

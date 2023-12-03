@@ -127,41 +127,49 @@ export default function OrgTable() {
       },
     })
   );
-
+  if (dataQuery.isFetching) {
+    console.log("dataQuery", dataQuery)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "100%",
+          justifyContent: "center",
+          gap: 2,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <CircularProgress variant="soft" />
+      </Box>
+    );
+      }
   
   if (dataQuery.isError) {
-    console.log("heehe", dataQuery.error?.response?.data?.message)
-    if (dataQuery.error?.response?.status === 403) {
-        return "暂无权限"   
-    } else {
-      toast.custom((t) => (
-      
-        <Alert
-          key={""}
-          sx={{ alignItems: "flex-start" }}
-          startDecorator={<ReportIcon />}
-          variant="soft"
-          color={"warning"}
-          endDecorator={
-            <IconButton variant="soft" color={"warning"}>
-              <CloseRoundedIcon />
-            </IconButton>
-          }
-        >
-          <div>
-            <div>访问失败</div>
-            <Typography level="body-sm" color={"warning"}>
-              {dataQuery.data?.data.message}
-            </Typography>
-          </div>
-        </Alert>
-      ));
-      return <div>访问失败</div>;
-    }
+    toast.custom((t) => (
+      <Alert
+        key={""}
+        sx={{ alignItems: "flex-start" }}
+        startDecorator={<ReportIcon />}
+        variant="soft"
+        color={"warning"}
+        endDecorator={
+          <IconButton variant="soft" color={"warning"}>
+            <CloseRoundedIcon />
+          </IconButton>
+        }
+      >
+        <div>
+          <div>访问失败</div>
+          <Typography level="body-sm" color={"warning"}>
+            {dataQuery.data?.data.message}
+          </Typography>
+        </div>
+      </Alert>
+    ));
+    return <div>访问失败</div>;
   }
-  if (dataQuery.isFetching) {
-    return <CircularProgress />
-  }
+  
 
   const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
 
@@ -365,7 +373,7 @@ export default function OrgTable() {
                 <td>
                   <Typography level="body-xs">{row.mtime}</Typography>
                 </td>
-            
+
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Link level="body-xs" component="button">

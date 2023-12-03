@@ -138,28 +138,43 @@ export const Routes = createBrowserRouter([
               },
             ],
           },
+          {
+            path: RouterPaths.orgs,
+            element: <Orgs />,
+            handle: {
+              crumb: () => (
+                <Link
+                  to={paths.orgs}
+                  style={{ textDecoration: "inherit", color: "inherit" }}
+                >
+                  组织
+                </Link>
+              ),
+            },
+            children: [
+              {
+                index: true,
+                element: <OrgTable />,
+              },
+              {
+                path: "create",
+                element: <AuthorityCreator />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      新建
+                    </CrumbLink>
+                  ),
+                },
+              },
+            ],
+          },
         ],
-      },
-
-      {
-        path: RouterPaths.orgs,
-        element: <Orgs />,
-        children: [{ index: true, element: <OrgTable /> }],
-      },
-      {
-        path: RouterPaths.authorities,
-        element: <Authorities />,
-        children: [{ index: true, element: <AuthorityTable /> }],
-      },
-      {
-        path: RouterPaths.namespaces,
-        element: <Namespaces />,
-        children: [{ index: true, element: <NamespaceTable /> }],
-      },
-      {
-        path: RouterPaths.users,
-        element: <Users />,
-        children: [{ index: true, element: <UserTable /> }],
       },
       { path: "*", element: <NoMatch /> },
     ],
@@ -189,9 +204,12 @@ export default function JoyOrderDashboardTemplate() {
     defaultOptions: {
       queries: {
         retry: (failureCount, error) => {
-          return !(
-            error?.response?.status >= 400 && error?.response?.status <= 500
-          );
+          if (!(error?.response?.status >= 400 && error?.response?.status <= 501)) {
+            if (failureCount < 3) {
+              return true
+            }
+          }
+          return  false
         },
         onError(error) {
           toast.error(

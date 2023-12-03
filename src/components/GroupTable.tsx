@@ -155,6 +155,7 @@ export default function GroupTable() {
     return <div>访问失败</div>;
   }
   if (dataQuery.isFetching) {
+    console.log("dataQuery", dataQuery)
     return (
       <Box
         sx={{

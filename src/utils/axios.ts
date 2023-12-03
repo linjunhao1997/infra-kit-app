@@ -39,6 +39,7 @@ axios.interceptors.response.use(
       case 401:
         localStorage.removeItem("Access-Token");
     }
+    console.log("error", error)
     return Promise.reject(error);
   }
 );
