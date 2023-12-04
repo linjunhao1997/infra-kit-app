@@ -26,3 +26,9 @@ If you are developing a production application, we recommend updating the config
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
 # infra-kit-app
+pnpm https://pnpm.io/zh/installation
+vite https://cn.vitejs.dev/guide/
+
+cd <项目名>
+pnpm install
+pnpm run dev
