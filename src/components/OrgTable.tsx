@@ -128,7 +128,6 @@ export default function OrgTable() {
     })
   );
   if (dataQuery.isFetching) {
-    console.log("dataQuery", dataQuery)
     return (
       <Box
         sx={{
@@ -146,27 +145,6 @@ export default function OrgTable() {
       }
   
   if (dataQuery.isError) {
-    toast.custom((t) => (
-      <Alert
-        key={""}
-        sx={{ alignItems: "flex-start" }}
-        startDecorator={<ReportIcon />}
-        variant="soft"
-        color={"warning"}
-        endDecorator={
-          <IconButton variant="soft" color={"warning"}>
-            <CloseRoundedIcon />
-          </IconButton>
-        }
-      >
-        <div>
-          <div>访问失败</div>
-          <Typography level="body-sm" color={"warning"}>
-            {dataQuery.data?.data.message}
-          </Typography>
-        </div>
-      </Alert>
-    ));
     return <div>访问失败</div>;
   }
   
