@@ -10,6 +10,7 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -25,9 +26,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../utils/axios";
+import axios from "@/utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
+import { listUser } from "@/services";
 
 interface GroupRow {
   id: string;
@@ -110,13 +112,7 @@ export default function GroupTable() {
   };
 
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
-    axios({
-      method: "get",
-      url: "/apis/v1/services/iam/namespaces",
-      params: {
-        pageSize: fetchDataOptions.pageSize,
-      },
-    })
+    listUser({pageSize: fetchDataOptions.pageSize})
   );
 
   if (dataQuery.isError) {
@@ -125,8 +121,8 @@ export default function GroupTable() {
   if (dataQuery.isFetching) {
     return <CircularProgress />
   }
-  
-  const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
+
+  const rows = dataQuery.data?.items ?? [];
 
   const renderFilters = () => (
     <React.Fragment>
@@ -290,8 +286,8 @@ export default function GroupTable() {
                   sx={{ verticalAlign: "text-bottom" }}
                 />
               </th>
-              <th style={{ width: 140, padding: "12px 6px" }}>标识</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>名称</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>用户名</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>邮箱</th>
               <th style={{ width: 240, padding: "12px 6px" }}>创建时间</th>
               <th style={{ width: 140, padding: "12px 6px" }}>修改时间</th>
               <th style={{ width: 140, padding: "12px 6px" }}>操作</th>
@@ -317,10 +313,10 @@ export default function GroupTable() {
                   />
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.code}</Typography>
+                  <Typography level="body-xs">{row.name}</Typography>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.name}</Typography>
+                  <Typography level="body-xs">{row.email}</Typography>
                 </td>
                 <td>
                   <Typography level="body-xs">{row.ctime}</Typography>

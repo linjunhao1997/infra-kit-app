@@ -5,7 +5,8 @@ import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
 
 
-import UserTable from '@/components/UserTable';
+import UserTable from '@/components/iam/UserTable';
+import { Outlet } from 'react-router-dom';
 
 export default function Users() {
 return (
@@ -58,7 +59,7 @@ return (
         Download PDF
       </Button>
     </Box>
-    <UserTable />
+    <Outlet />
   </Box>
 )
 }

@@ -27,207 +27,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
-import Alert from "@mui/joy/Alert";
-import toast from "react-hot-toast";
-import ReportIcon from "@mui/icons-material/Report";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import AddSharpIcon from '@mui/icons-material/AddSharp';
+import AddSharpIcon from "@mui/icons-material/AddSharp";
 import { useNavigate } from "react-router-dom";
-
-
-interface GroupRow {
-  id: string;
-  code: string;
-  name: string;
-  ctime: string;
-  mtime: string;
-}
-
-/* const rows = [
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-  {
-    id: 'INV-1232',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'C',
-      name: 'Ciaran Murray',
-      email: 'ciaran.murray@email.com',
-    },
-  },
-  {
-    id: 'INV-1231',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'M',
-      name: 'Maria Macdonald',
-      email: 'maria.mc@email.com',
-    },
-  },
-  {
-    id: 'INV-1230',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'C',
-      name: 'Charles Fulton',
-      email: 'fulton@email.com',
-    },
-  },
-  {
-    id: 'INV-1229',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'J',
-      name: 'Jay Hooper',
-      email: 'hooper@email.com',
-    },
-  },
-  {
-    id: 'INV-1228',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'K',
-      name: 'Krystal Stevens',
-      email: 'k.stevens@email.com',
-    },
-  },
-  {
-    id: 'INV-1227',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Sachin Flynn',
-      email: 's.flyn@email.com',
-    },
-  },
-  {
-    id: 'INV-1226',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'B',
-      name: 'Bradley Rosales',
-      email: 'brad123@email.com',
-    },
-  },
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-  {
-    id: 'INV-1232',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'C',
-      name: 'Ciaran Murray',
-      email: 'ciaran.murray@email.com',
-    },
-  },
-  {
-    id: 'INV-1231',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'M',
-      name: 'Maria Macdonald',
-      email: 'maria.mc@email.com',
-    },
-  },
-  {
-    id: 'INV-1230',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'C',
-      name: 'Charles Fulton',
-      email: 'fulton@email.com',
-    },
-  },
-  {
-    id: 'INV-1229',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'J',
-      name: 'Jay Hooper',
-      email: 'hooper@email.com',
-    },
-  },
-  {
-    id: 'INV-1228',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'K',
-      name: 'Krystal Stevens',
-      email: 'k.stevens@email.com',
-    },
-  },
-  {
-    id: 'INV-1227',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Sachin Flynn',
-      email: 's.flyn@email.com',
-    },
-  },
-  {
-    id: 'INV-1226',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'B',
-      name: 'Bradley Rosales',
-      email: 'brad123@email.com',
-    },
-  },
-]; */
+import { listAuthority } from "@/services";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -297,56 +101,23 @@ export default function AuthorityTable() {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const fetchDataOptions = {
     pageSize: 10,
   };
 
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
-    axios({
-      method: "get",
-      url: "/apis/v1/services/iam/authorities",
-      params: {
-        pageSize: fetchDataOptions.pageSize,
-      },
-    }), {
-      retry: false
-    }
+    listAuthority({ pageSize: fetchDataOptions.pageSize })
   );
   if (dataQuery.isError) {
-    if (dataQuery.error?.response?.status === 403) {
-        return "暂无权限"   
-    } else {
-      toast.custom((t) => (
-        <Alert
-          key={""}
-          sx={{ alignItems: "flex-start" }}
-          startDecorator={<ReportIcon />}
-          variant="soft"
-          color={"warning"}
-          endDecorator={
-            <IconButton variant="soft" color={"warning"}>
-              <CloseRoundedIcon />
-            </IconButton>
-          }
-        >
-          <div>
-            <div>访问失败</div>
-            <Typography level="body-sm" color={"warning"}>
-              {dataQuery.data?.data.message}
-            </Typography>
-          </div>
-        </Alert>
-      ));
-      return <div>访问失败</div>;
-    }
+    return <div>访问失败</div>;
   }
   if (dataQuery.isFetching) {
-    return <CircularProgress />
+    return <CircularProgress />;
   }
 
-  const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
+  const rows = dataQuery.data?.items ?? [];
 
   const renderFilters = () => (
     <React.Fragment>
@@ -463,7 +234,7 @@ export default function AuthorityTable() {
       <Button
         color="primary"
         size="sm"
-        onClick={() => navigate('/iam/authorities/create')}
+        onClick={() => navigate("/iam/authorities/create")}
       >
         <AddSharpIcon />
       </Button>
@@ -479,7 +250,6 @@ export default function AuthorityTable() {
           minHeight: 0,
         }}
       >
-        
         <Table
           aria-labelledby="tableTitle"
           stickyHeader
@@ -556,7 +326,7 @@ export default function AuthorityTable() {
                 <td>
                   <Typography level="body-xs">{row.mtime}</Typography>
                 </td>
-            
+
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Link level="body-xs" component="button">

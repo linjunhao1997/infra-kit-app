@@ -1,5 +1,3 @@
-/** 对axios做一些配置 **/
-
 import { baseUrl } from "../configs";
 import axios from "axios";
 

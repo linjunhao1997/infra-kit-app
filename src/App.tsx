@@ -9,26 +9,27 @@ import Sidebar from "./components/Sidebar";
 
 import LoginPage from "./pages/LoginPage";
 
-import { Provider } from "react-redux";
-import store from "./store";
+import { Provider, useSelector } from "react-redux";
+import store, { RootState } from "./store";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Link, Outlet, createBrowserRouter } from "react-router-dom";
 import Orgs from "./components/iam/Orgs";
 import Authorities from "./components/iam/Authorities";
 import toast, { Toaster } from "react-hot-toast";
-import GroupUpdater from "@/components/GroupUpdater";
-import GroupTable from "@/components/GroupTable";
+import GroupUpdater from "@/components/iam/GroupUpdater";
+import GroupTable from "@/components/iam/GroupTable";
 import Groups from "./components/iam/Groups";
-import OrgTable from "./components/OrgTable";
-import AuthorityTable from "./components/AuthorityTable";
+import OrgTable from "./components/iam/OrgTable";
+import AuthorityTable from "./components/iam/AuthorityTable";
 import { RouterPaths } from "./routers/path";
 import CrumbLink from "@mui/joy/Link";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import AuthorityCreator from "./components/AuthorityCreator";
+import AuthorityCreator from "./components/iam/AuthorityCreator";
 import Users from "./components/iam/Users";
-import UserTable from "./components/UserTable";
+import UserTable from "./components/iam/UserTable";
 import Namespaces from "./components/iam/Namespaces";
-import NamespaceTable from "./components/NamespaceTable";
+import NamespaceTable from "./components/iam/NamespaceTable";
+import GroupCreator from "./components/iam/GroupCreator";
 
 export const paths = {
   groups: "/iam/groups",
@@ -100,6 +101,22 @@ export const Routes = createBrowserRouter([
                   ),
                 },
               },
+              {
+                path: "create",
+                element: <GroupCreator />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="create"
+                    >
+                      新建
+                    </CrumbLink>
+                  ),
+                },
+              },
             ],
           },
           {
@@ -129,7 +146,7 @@ export const Routes = createBrowserRouter([
                       underline="none"
                       color="neutral"
                       href="#"
-                      aria-label="edit"
+                      aria-label="create"
                     >
                       新建
                     </CrumbLink>
@@ -294,6 +311,13 @@ export default function JoyOrderDashboardTemplate() {
       mutations: {
         onSuccess() {
           toast.success("success");
+        },
+        onError(error) {
+          toast.error(
+            error?.response?.statusText +
+              " " +
+              (error?.response?.data?.message || "请求异常")
+          );
         },
       },
     },

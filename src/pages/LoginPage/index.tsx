@@ -26,6 +26,11 @@ import ReportIcon from "@mui/icons-material/Report";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import toast from "react-hot-toast";
 import { Alert } from "@mui/joy";
+import { setUserSession } from "@/store/userinfo";
+import Cookies from 'js-cookie';
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -68,6 +73,8 @@ function ColorSchemeToggle({ onClick, ...props }: IconButtonProps) {
 }
 
 export default function JoySignInSideTemplate() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
       <CssBaseline />
@@ -202,8 +209,14 @@ export default function JoySignInSideTemplate() {
                     .post("apis/v1/services/iam/auth", data)
                     .then((res) => {
                       console.log(res);
-                      localStorage.setItem("Access-Token", res?.data?.accessToken);
-                      location.reload();
+                      const cookieValue = Cookies.get('Org-Code');
+                      dispatch(setUserSession({
+                        orgCode: cookieValue || "",
+                        userId: "",
+                        name: "",
+                      }))
+                      localStorage.setItem("Access-Token", res?.data?.accessToken)
+                      navigate("/")
                     })
                     .catch((e) => {
                       toast.custom((t) => (

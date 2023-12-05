@@ -6,7 +6,8 @@ import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
 
 
-import NamespaceTable from '@/components/NamespaceTable';
+import NamespaceTable from '@/components/iam/NamespaceTable';
+import { Outlet } from 'react-router';
 
 export default function Namespaces() {
 return (
@@ -59,7 +60,7 @@ return (
         Download PDF
       </Button>
     </Box>
-    <NamespaceTable />
+    <Outlet />
   </Box>
 )
 }

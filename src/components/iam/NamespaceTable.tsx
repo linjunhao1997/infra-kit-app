@@ -25,15 +25,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
-import toast from "react-hot-toast";
-import Alert from "@mui/joy/Alert";
-import ReportIcon from "@mui/icons-material/Report";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { useNavigate } from "react-router-dom";
-import { paths } from "@/App";
+import { listNamespace } from "@/services";
 
 interface GroupRow {
   id: string;
@@ -86,12 +81,7 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-interface RowMenuProps {
-  id: string
-}
-function RowMenu({id}: RowMenuProps) {
-  const navigate = useNavigate()
-
+function RowMenu() {
   return (
     <Dropdown>
       <MenuButton
@@ -101,7 +91,7 @@ function RowMenu({id}: RowMenuProps) {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem onClick={() => {navigate(paths.groups + "/" + id)}}>Edit</MenuItem>
+        <MenuItem>Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -121,58 +111,17 @@ export default function GroupTable() {
   };
 
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
-    axios({
-      method: "get",
-      url: "/apis/v1/services/iam/groups",
-      params: {
-        pageSize: fetchDataOptions.pageSize,
-      },
-    })
+    listNamespace({pageSize: fetchDataOptions.pageSize})
   );
 
   if (dataQuery.isError) {
-    toast.custom((t) => (
-      <Alert
-        key={""}
-        sx={{ alignItems: "flex-start" }}
-        startDecorator={<ReportIcon />}
-        variant="soft"
-        color={"warning"}
-        endDecorator={
-          <IconButton variant="soft" color={"warning"}>
-            <CloseRoundedIcon />
-          </IconButton>
-        }
-      >
-        <div>
-          <div>访问失败</div>
-          <Typography level="body-sm" color={"warning"}>
-            {dataQuery.data?.data.message}
-          </Typography>
-        </div>
-      </Alert>
-    ));
-    return <div>访问失败</div>;
+    return <div>error</div>;
   }
   if (dataQuery.isFetching) {
-    console.log("dataQuery", dataQuery)
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          height: "100%",
-          justifyContent: "center",
-          gap: 2,
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        <CircularProgress variant="soft" />
-      </Box>
-    );
+    return <CircularProgress />
   }
-
-  const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
+  
+  const rows = dataQuery.data?.items ?? [];
 
   const renderFilters = () => (
     <React.Fragment>
@@ -374,13 +323,13 @@ export default function GroupTable() {
                 <td>
                   <Typography level="body-xs">{row.mtime}</Typography>
                 </td>
-
+            
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Link level="body-xs" component="button">
                       Download
                     </Link>
-                    <RowMenu id={row.id}/>
+                    <RowMenu />
                   </Box>
                 </td>
               </tr>

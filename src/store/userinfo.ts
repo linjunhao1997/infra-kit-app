@@ -1,17 +1,20 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type Userinfo = {
-  permissons :Permisson[]
+interface Userinfo {
   userSession: UserSession
 }
 
+interface UserSession {
+  orgCode: string
+  name: string
+  userId: string
+}
+
 const initialState: Userinfo = {
-  permissons: [],
   userSession: {
-    org: "",
+    orgCode: "",
     name: "",
     userId: "",
-    authToken: ""
   },
 }
 export const userinfo = createSlice({
@@ -19,19 +22,18 @@ export const userinfo = createSlice({
   name: "userinfo",
   initialState,
   reducers: {
-    setPermissons: (state, action: PayloadAction<Permisson[]>) => {
+   /*  setPermissons: (state, action: PayloadAction<Permisson[]>) => {
       console.log("setPermissons", action)
       state.permissons = action.payload
-    },
+    }, */
     setUserSession: (state, action: PayloadAction<UserSession>) => {
-      console.log("setUserSession", action)
       state.userSession = action.payload
-      localStorage.setItem("authToken", state.userSession.authToken)
     },
   },
 });
 
 // 将所有action导出，以供组件调用
-export const { setUserSession, setPermissons } = userinfo.actions;
+export const { setUserSession } = userinfo.actions;
 // 导出该切片，并在index.js中的reducer进行配置
 export default userinfo.reducer;
+

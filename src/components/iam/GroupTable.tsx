@@ -10,7 +10,6 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
-
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -26,17 +25,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "@/utils/axios";
+import AddSharpIcon from "@mui/icons-material/AddSharp";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
-
-interface GroupRow {
-  id: string;
-  code: string;
-  name: string;
-  ctime: string;
-  mtime: string;
-}
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/App";
+import { listGroup } from "@/services";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -81,7 +75,12 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
+interface RowMenuProps {
+  id: string
+}
+function RowMenu({id}: RowMenuProps) {
+  const navigate = useNavigate()
+
   return (
     <Dropdown>
       <MenuButton
@@ -91,7 +90,7 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+        <MenuItem onClick={() => {navigate(paths.groups + "/" + id)}}>Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -106,28 +105,40 @@ export default function GroupTable() {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
 
+  const navigate = useNavigate();
+
+
   const fetchDataOptions = {
     pageSize: 10,
   };
 
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
-    axios({
-      method: "get",
-      url: "/apis/v1/services/iam/users",
-      params: {
-        pageSize: fetchDataOptions.pageSize,
-      },
+    listGroup({
+      pageSize: fetchDataOptions.pageSize,
     })
   );
 
   if (dataQuery.isError) {
-    return <div>error</div>;
+    return <div>访问失败</div>;
   }
   if (dataQuery.isFetching) {
-    return <CircularProgress />
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "100%",
+          justifyContent: "center",
+          gap: 2,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <CircularProgress variant="soft" />
+      </Box>
+    );
   }
 
-  const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
+  const rows = dataQuery.data?.items ?? [];
 
   const renderFilters = () => (
     <React.Fragment>
@@ -240,7 +251,15 @@ export default function GroupTable() {
           />
         </FormControl>
         {renderFilters()}
+        
       </Box>
+      <Button
+        color="primary"
+        size="sm"
+        onClick={() => navigate("/iam/groups/create")}
+      >
+        <AddSharpIcon />
+      </Button>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -329,13 +348,13 @@ export default function GroupTable() {
                 <td>
                   <Typography level="body-xs">{row.mtime}</Typography>
                 </td>
-            
+
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Link level="body-xs" component="button">
                       Download
                     </Link>
-                    <RowMenu />
+                    <RowMenu id={row.id}/>
                   </Box>
                 </td>
               </tr>

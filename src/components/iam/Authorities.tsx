@@ -1,12 +1,10 @@
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
 import Typography from '@mui/joy/Typography';
 import RouterBreadCrumbs from "@/components/RouterBreadcrumbs";
 
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 export default function Authorities() {
-const navigate = useNavigate()
 return (
     <Box
     component="main"

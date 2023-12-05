@@ -1,10 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
-import Avatar from "@mui/joy/Avatar";
-import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -13,8 +9,6 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -30,21 +24,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
-import toast from "react-hot-toast";
-import Alert from "@mui/joy/Alert";
-import ReportIcon from "@mui/icons-material/Report";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-
-interface GroupRow {
-  id: string;
-  code: string;
-  name: string;
-  ctime: string;
-  mtime: string;
-}
+import { listOrg } from "@/services";
+import Box from "@mui/joy/Box";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -119,13 +103,7 @@ export default function OrgTable() {
   };
 
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
-    axios({
-      method: "get",
-      url: "/apis/v1/services/iam/orgs",
-      params: {
-        pageSize: fetchDataOptions.pageSize,
-      },
-    })
+    listOrg({ pageSize: fetchDataOptions.pageSize })
   );
   if (dataQuery.isFetching) {
     return (
@@ -142,14 +120,13 @@ export default function OrgTable() {
         <CircularProgress variant="soft" />
       </Box>
     );
-      }
-  
+  }
+
   if (dataQuery.isError) {
     return <div>访问失败</div>;
   }
-  
 
-  const rows: GroupRow[] = dataQuery.data?.data.items ?? [];
+  const rows = dataQuery.data?.items ?? [];
 
   const renderFilters = () => (
     <React.Fragment>

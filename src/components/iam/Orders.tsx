@@ -8,7 +8,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
-import OrderTable from '@/components/OrderTable';
+import OrderTable from '@/components/iam/OrderTable';
 
 export default function Orders() {
 return (
