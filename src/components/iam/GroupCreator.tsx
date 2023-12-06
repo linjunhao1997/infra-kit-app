@@ -17,11 +17,13 @@ export default function GroupCreator() {
 
   const [code, setCode] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
+
 
   const { isLoading, mutate } = useMutation<
     any,
     Error
-  >(() => createGroup({orgCode: userSession.orgCode, code: code, name: name}));
+  >(() => createGroup({orgCode: userSession.orgCode, code: code, name: name, description: description}));
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,6 +56,15 @@ export default function GroupCreator() {
             onChange={(e) => setName(e.target.value)}
           />
           <FormHelperText>输入用户组名</FormHelperText>
+        </FormControl>
+        <FormControl>
+          <FormLabel>备注</FormLabel>
+          <Input
+            placeholder="备注"
+            defaultValue={""}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <FormHelperText>备注</FormHelperText>
         </FormControl>
 
         <Button

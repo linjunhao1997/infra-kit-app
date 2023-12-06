@@ -209,13 +209,7 @@ export default function JoySignInSideTemplate() {
                     .post("apis/v1/services/iam/auth", data)
                     .then((res) => {
                       console.log(res);
-                      const cookieValue = Cookies.get('Org-Code');
-                      dispatch(setUserSession({
-                        orgCode: cookieValue || "",
-                        userId: "",
-                        name: "",
-                      }))
-                      localStorage.setItem("Access-Token", res?.data?.accessToken)
+                      dispatch(setUserSession())
                       navigate("/")
                     })
                     .catch((e) => {

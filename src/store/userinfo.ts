@@ -1,4 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import Cookies from 'js-cookie';
+
 
 interface Userinfo {
   userSession: UserSession
@@ -8,6 +10,7 @@ interface UserSession {
   orgCode: string
   name: string
   userId: string
+  accessToken: string
 }
 
 const initialState: Userinfo = {
@@ -15,6 +18,7 @@ const initialState: Userinfo = {
     orgCode: "",
     name: "",
     userId: "",
+    accessToken: ""
   },
 }
 export const userinfo = createSlice({
@@ -26,8 +30,11 @@ export const userinfo = createSlice({
       console.log("setPermissons", action)
       state.permissons = action.payload
     }, */
-    setUserSession: (state, action: PayloadAction<UserSession>) => {
-      state.userSession = action.payload
+    setUserSession: (state) => {
+      const accessToken = Cookies.get("Access-Token")
+      const orgCode = Cookies.get("Org-Code")
+      state.userSession.accessToken = accessToken ?? ""
+      state.userSession.orgCode = orgCode ?? ""
     },
   },
 });

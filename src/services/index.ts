@@ -16,6 +16,7 @@ interface Group {
     id: string
     code: string
     name: string
+    description: string
     ctime: string
     mtime: string
 }
@@ -108,7 +109,7 @@ export async function createAuthority(payload: {code: string, name: string}): Pr
      return res.data
  }
 
- export async function createGroup(payload: {orgCode: string, code: string, name: string}): Promise<Group> {
+ export async function createGroup(payload: {orgCode: string, code: string, name: string, description: string}): Promise<Group> {
     const res =  await axios({
          url: prefixIamApi+"groups",
          method: 'post',

@@ -9,7 +9,7 @@ import Sidebar from "./components/Sidebar";
 
 import LoginPage from "./pages/LoginPage";
 
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import store, { RootState } from "./store";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Link, Outlet, createBrowserRouter } from "react-router-dom";
@@ -30,6 +30,8 @@ import UserTable from "./components/iam/UserTable";
 import Namespaces from "./components/iam/Namespaces";
 import NamespaceTable from "./components/iam/NamespaceTable";
 import GroupCreator from "./components/iam/GroupCreator";
+import { setUserSession } from "./store/userinfo";
+
 
 export const paths = {
   groups: "/iam/groups",
@@ -289,6 +291,14 @@ const useEnhancedEffect =
   typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
 export default function JoyOrderDashboardTemplate() {
+  const userSession = useSelector((state: RootState) => state.userinfo.userSession)
+  const dispatch = useDispatch()
+
+  
+  if (userSession.orgCode === "") {
+    dispatch(setUserSession())
+  }
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -349,15 +359,13 @@ export default function JoyOrderDashboardTemplate() {
   return (
     <React.Fragment>
       <Toaster />
-      <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          {localStorage.getItem("Access-Token") === null ? (
+          {userSession.accessToken === "" ? (
             <LoginPage />
           ) : (
             <Dashboard />
           )}
         </QueryClientProvider>
-      </Provider>
     </React.Fragment>
   );
 }
