@@ -4,70 +4,74 @@ import FormHelperText from "@mui/joy/FormHelperText";
 import Input from "@mui/joy/Input";
 import { useNavigate, useParams } from "react-router-dom";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
+import axios from "@/utils/axios";
 import CircularProgress from "@mui/joy/CircularProgress";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import React, {createContext, useContext, useState } from "react";
+import React, { useState } from "react";
 import Typography from "@mui/joy/Typography";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import Checkbox from "@mui/joy/Checkbox";
-import { getGroup, listAuthority } from "@/services/iam";
+import { listAuthority } from "@/services/iam";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
-import { updateGroup } from "@/services/iam";
 
-interface groupUpdaterContextProps {
+interface ResData {
+  id: string;
+  code: string;
+  name: string;
   authorityIds: string[];
-  addAuthorityIds: string[];
-  setAddAuthorityIds: React.Dispatch<React.SetStateAction<string[]>>
-  removeAuthorityIds: string[];
-  setRemoveAuthorityIds: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-const initialGroupUpdaterContextProps: groupUpdaterContextProps = {
-  authorityIds: [],
-  addAuthorityIds: [],
-  setAddAuthorityIds: () => {},
-  removeAuthorityIds: [],
-  setRemoveAuthorityIds: () => {},
-};
-
-const groupUpdaterContext = createContext<groupUpdaterContextProps>(initialGroupUpdaterContextProps)
-
-export default function GroupUpdater() {
+export default function NamespaceUpdater() {
   const navigate = useNavigate();
+
   let { id } = useParams();
-  const dataQuery = useQuery(["data"], () => getGroup(id as string, true), {
-    refetchOnMount: true,
-  });
+  const dataQuery = useQuery(["data"], () =>
+    axios({
+      method: "get",
+      url: "/apis/v1/services/iam/groups/" + id,
+      params: {
+        withAuthorityIds: true,
+      },
+    }), {
+      refetchOnMount: true,
+    }
+  );
 
-  const [code, setCode] = React.useState<undefined | string>();
-  const [name, setName] = React.useState<undefined | string>();
+  const [code, setCode] = React.useState<null | string>(null);
+  const [name, setName] = React.useState<null | string>(null);
   const [addAuthorityIds, setAddAuthorityIds] = useState<string[]>([]);
-  const [removeAuthorityIds, setRemoveAuthorityIds] = useState<string[]>([]);
+  const [removeAuthorityIds, setRemoveAddAuthorityIds] = useState<string[]>([]);
 
-  const { isLoading, mutate } = useMutation<any, Error>(async () => {
-    await updateGroup(id as string, {
-      code: code,
-      name: name,
-      addAuthorityIds: addAuthorityIds,
-      removeAuthorityIds: removeAuthorityIds,
+  const { isLoading: isUpdatingGroup, mutate: updateGroup } = useMutation<
+    any,
+    Error
+  >(() => {
+    return axios({
+      method: "patch",
+      url: "/apis/v1/services/iam/groups/" + id,
+      data: {
+        code: code,
+        name: name,
+        addAuthorityIds: addAuthorityIds,
+        removeAuthorityIds: removeAuthorityIds,
+      },
+    }).then(() => {
+      dataQuery.refetch()
     });
-    dataQuery.refetch();
   });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    mutate();
+    updateGroup();
   };
 
- /*  const setIds = (addAuthorityIds: string[], removeAuthorityIds: string[]) => {
+  const setIds = (addAuthorityIds: string[], removeAuthorityIds: string[]) => {
     setAddAuthorityIds(addAuthorityIds);
     setRemoveAddAuthorityIds(removeAuthorityIds);
-    console.log("add", addAuthorityIds);
-    console.log("remove", removeAuthorityIds);
-  }; */
+  };
 
   if (dataQuery.isFetching) {
     return (
@@ -86,16 +90,11 @@ export default function GroupUpdater() {
     );
   }
 
-  const resData = dataQuery.data;
+  const resData: ResData = dataQuery.data?.data;
 
   return (
-  <groupUpdaterContext.Provider value={{
-    authorityIds: resData?.authorityIds as string[],
-    addAuthorityIds, 
-    setAddAuthorityIds, 
-    removeAuthorityIds, 
-    setRemoveAuthorityIds}}>
-    <span
+    <>
+      <span
         onClick={() => {
           navigate(-1);
         }}
@@ -107,7 +106,7 @@ export default function GroupUpdater() {
           <FormLabel>标识</FormLabel>
           <Input
             placeholder="用户组标识"
-            defaultValue={resData?.code}
+            defaultValue={resData.code}
             onChange={(e) => setCode(e.target.value)}
           />
           <FormHelperText>输入用户组标识.</FormHelperText>
@@ -116,47 +115,54 @@ export default function GroupUpdater() {
           <FormLabel>组名</FormLabel>
           <Input
             placeholder="用户组名"
-            defaultValue={resData?.name}
+            defaultValue={resData.name}
             onChange={(e) => setName(e.target.value)}
           />
           <FormHelperText>输入用户组名</FormHelperText>
         </FormControl>
-        <Authorities  />
+
+        <Authorities checkedIds={resData.authorityIds} setIds={setIds} />
         <Button
-          variant="solid"
-          color="primary"
-          loading={isLoading}
-          type="submit"
-        >
-          保存
-        </Button>
+        variant="solid"
+        color="primary"
+        loading={isUpdatingGroup}
+        type="submit"
+      >
+        保存
+      </Button>
       </form>
-    </groupUpdaterContext.Provider>
+     
+    </>
   );
 }
 
-function Authorities() {
-  const {authorityIds, addAuthorityIds, setAddAuthorityIds, removeAuthorityIds, setRemoveAuthorityIds} = useContext(groupUpdaterContext)
+interface AuthoritiesProps {
+  checkedIds: string[];
+  setIds: (addAuthorityIds: string[], removeAuthorityIds: string[]) => void;
+}
+function Authorities({ checkedIds, setIds }: AuthoritiesProps) {
+  const [removeAuthorityIds, setRemoveAuthorityIds] = useState<string[]>([]);
+  const [addAuthorityIds, setAddAuthorityIds] = useState<string[]>([]);
 
-  const [checkedIdSet] = useState(new Set(authorityIds));
+  const checkedIdSet = new Set(checkedIds);
 
-  const fetchData = async (pageToken: string) => {
-    return await listAuthority({
-      groupId: "",
-      pageSize: 5,
-      pageToken: pageToken,
-    });
+  const fetchRepositories = async (page: string) => {
+    return await listAuthority({ groupId: "", pageSize: 5, pageToken: page });
   };
 
   const { data, isSuccess, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery("repos", ({ pageParam = "" }) => fetchData(pageParam), {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage?.pagination.nextPageToken === "") {
-          return undefined;
-        }
-        return lastPage.pagination.nextPageToken;
-      },
-    });
+    useInfiniteQuery(
+      "repos",
+      ({ pageParam = "" }) => fetchRepositories(pageParam),
+      {
+        getNextPageParam: (lastPage, allPages) => {
+          if (lastPage?.pagination.nextPageToken === "") {
+            return undefined;
+          }
+          return lastPage.pagination.nextPageToken;
+        },
+      }
+    );
 
   return (
     <div>
@@ -172,20 +178,27 @@ function Authorities() {
                   label={data?.name}
                   defaultChecked={checkedIdSet.has(data?.id)}
                   onChange={(e) => {
-                    if (e.target.checked) {
-                      addAuthorityIds.push(data?.id);
-                      const removeSet = new Set(removeAuthorityIds);
-                      removeSet.delete(data?.id);
-                      const addSet = new Set(addAuthorityIds);
-                      setAddAuthorityIds([...addSet]);
-                      setRemoveAuthorityIds([...removeSet]);
-                    } else {
+                    if (checkedIdSet.has(data?.id) && !e.target.checked) {
                       removeAuthorityIds.push(data?.id);
+                      const set = new Set(removeAuthorityIds);
+                      setRemoveAuthorityIds([...set]);
+                      setIds(addAuthorityIds, [...set]);
+                    } else if (
+                      !checkedIdSet.has(data?.id) &&
+                      e.target.checked
+                    ) {
+                      addAuthorityIds.push(data?.id);
+                      const set = new Set(addAuthorityIds);
+                      setAddAuthorityIds([...set]);
+                      setIds([...set], removeAuthorityIds);
+                    } else {
                       const addSet = new Set(addAuthorityIds);
                       addSet.delete(data?.id);
-                      const removeSet = new Set(removeAuthorityIds);
                       setAddAuthorityIds([...addSet]);
+                      const removeSet = new Set(removeAuthorityIds);
+                      removeSet.delete(data?.id);
                       setRemoveAuthorityIds([...removeSet]);
+                      setIds([...addSet], [...removeSet]);
                     }
                   }}
                 />

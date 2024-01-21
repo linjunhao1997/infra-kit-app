@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
 
-export default function GroupCreator() {
+export default function NamespaceCreator() {
   const navigate = useNavigate();
   const userSession = useSelector((state: RootState) => state.userinfo.userSession)
 

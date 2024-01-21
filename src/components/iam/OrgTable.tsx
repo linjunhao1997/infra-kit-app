@@ -24,11 +24,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../../utils/axios";
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { listOrg } from "@/services";
+import { listOrg } from "@/services/iam";
 import Box from "@mui/joy/Box";
+import { paths } from "@/App";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -73,7 +75,11 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
+interface RowMenuProps {
+  id: string
+}
+function RowMenu({id}: RowMenuProps) {
+  const navigate = useNavigate()
   return (
     <Dropdown>
       <MenuButton
@@ -83,7 +89,7 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+      <MenuItem onClick={() => {navigate(paths.orgs + "/" + id)}}>Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -97,6 +103,7 @@ export default function OrgTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const fetchDataOptions = {
     pageSize: 10,
@@ -240,6 +247,13 @@ export default function OrgTable() {
         </FormControl>
         {renderFilters()}
       </Box>
+      <Button
+        color="primary"
+        size="sm"
+        onClick={() => navigate("/iam/orgs/create")}
+      >
+        <AddSharpIcon />
+      </Button>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -331,10 +345,7 @@ export default function OrgTable() {
 
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Link level="body-xs" component="button">
-                      Download
-                    </Link>
-                    <RowMenu />
+                    <RowMenu id={row.id}/>
                   </Box>
                 </td>
               </tr>

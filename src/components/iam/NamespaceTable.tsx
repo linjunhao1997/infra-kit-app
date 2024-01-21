@@ -25,18 +25,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "../../utils/axios";
-import { useQuery } from "react-query";
+import AddSharpIcon from "@mui/icons-material/AddSharp";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { listNamespace } from "@/services";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import { listNamespace } from "@/services/iam";
 
-interface GroupRow {
-  id: string;
-  code: string;
-  name: string;
-  ctime: string;
-  mtime: string;
-}
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -101,10 +95,13 @@ function RowMenu() {
   );
 }
 
-export default function GroupTable() {
+export default function NamespaceTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+
+  const navigate = useNavigate();
+
 
   const fetchDataOptions = {
     pageSize: 10,
@@ -235,6 +232,13 @@ export default function GroupTable() {
         </FormControl>
         {renderFilters()}
       </Box>
+      <Button
+        color="primary"
+        size="sm"
+        onClick={() => navigate("/iam/namespaces/create")}
+      >
+        <AddSharpIcon />
+      </Button>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"

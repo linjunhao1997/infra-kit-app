@@ -31,7 +31,7 @@ import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import { useNavigate } from "react-router-dom";
-import { listAuthority } from "@/services";
+import { listAuthority } from "@/services/iam";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

@@ -6,24 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import Button from "@mui/joy/Button";
 import React from "react";
-import { createGroup } from "@/services/iam";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { createOrg } from "@/services/iam";
 
 
-export default function GroupCreator() {
+export default function OrgCreator() {
   const navigate = useNavigate();
-  const userSession = useSelector((state: RootState) => state.userinfo.userSession)
 
   const [code, setCode] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
-  const [description, setDescription] = React.useState<string>("");
-
 
   const { isLoading, mutate } = useMutation<
     any,
     Error
-  >(() => createGroup({orgCode: userSession.orgCode, code: code, name: name, description: description}));
+  >(() => createOrg({code: code, name: name}));
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,33 +35,23 @@ export default function GroupCreator() {
       </span>
       <form onSubmit={handleSubmit} id="demo">
         <FormControl>
-          <FormLabel>用户组标识</FormLabel>
+          <FormLabel>组织标识</FormLabel>
           <Input
-            placeholder="用户组标识"
+            placeholder="组织标识"
             defaultValue={""}
             onChange={(e) => setCode(e.target.value)}
           />
-          <FormHelperText>输入用户组标识</FormHelperText>
+          <FormHelperText>输入组织标识</FormHelperText>
         </FormControl>
         <FormControl>
-          <FormLabel>用户组名</FormLabel>
+          <FormLabel>组织名称</FormLabel>
           <Input
-            placeholder="用户组名"
+            placeholder="组织名称"
             defaultValue={""}
             onChange={(e) => setName(e.target.value)}
           />
-          <FormHelperText>输入用户组名</FormHelperText>
+          <FormHelperText>输入组织名称</FormHelperText>
         </FormControl>
-        <FormControl>
-          <FormLabel>备注</FormLabel>
-          <Input
-            placeholder="备注"
-            defaultValue={""}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <FormHelperText>备注</FormHelperText>
-        </FormControl>
-
         <Button
         variant="solid"
         color="primary"

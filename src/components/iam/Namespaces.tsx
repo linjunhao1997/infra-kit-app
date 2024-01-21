@@ -52,13 +52,6 @@ return (
       }}
     >
       <Typography level="h2">命名空间</Typography>
-      <Button
-        color="primary"
-        startDecorator={<DownloadRoundedIcon />}
-        size="sm"
-      >
-        Download PDF
-      </Button>
     </Box>
     <Outlet />
   </Box>

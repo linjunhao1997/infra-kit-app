@@ -30,7 +30,7 @@ import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/App";
-import { listGroup } from "@/services";
+import { listGroup } from "@/services/iam";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -104,10 +104,7 @@ export default function GroupTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
-
   const navigate = useNavigate();
-
-
   const fetchDataOptions = {
     pageSize: 10,
   };

@@ -51,13 +51,6 @@ return (
       }}
     >
       <Typography level="h2">用户</Typography>
-      <Button
-        color="primary"
-        startDecorator={<DownloadRoundedIcon />}
-        size="sm"
-      >
-        Download PDF
-      </Button>
     </Box>
     <Outlet />
   </Box>

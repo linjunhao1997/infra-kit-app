@@ -26,18 +26,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import axios from "@/utils/axios";
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { listUser } from "@/services";
-
-interface GroupRow {
-  id: string;
-  code: string;
-  name: string;
-  ctime: string;
-  mtime: string;
-}
+import { listUser } from "@/services/iam";
+import { paths } from "@/App";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -82,7 +76,13 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
+
+interface RowMenuProps {
+  id: string
+}
+function RowMenu({id}: RowMenuProps) {
+  const navigate = useNavigate()
+
   return (
     <Dropdown>
       <MenuButton
@@ -92,7 +92,13 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate(paths.users + "/" + id);
+          }}
+        >
+          Edit
+        </MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -102,24 +108,25 @@ function RowMenu() {
   );
 }
 
-export default function GroupTable() {
+export default function UserTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const fetchDataOptions = {
     pageSize: 10,
   };
 
   const dataQuery = useQuery(["data", fetchDataOptions], () =>
-    listUser({pageSize: fetchDataOptions.pageSize})
+    listUser({ pageSize: fetchDataOptions.pageSize })
   );
 
   if (dataQuery.isError) {
     return <div>error</div>;
   }
   if (dataQuery.isFetching) {
-    return <CircularProgress />
+    return <CircularProgress />;
   }
 
   const rows = dataQuery.data?.items ?? [];
@@ -236,6 +243,13 @@ export default function GroupTable() {
         </FormControl>
         {renderFilters()}
       </Box>
+      <Button
+        color="primary"
+        size="sm"
+        onClick={() => navigate("/iam/users/create")}
+      >
+        <AddSharpIcon />
+      </Button>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -324,13 +338,10 @@ export default function GroupTable() {
                 <td>
                   <Typography level="body-xs">{row.mtime}</Typography>
                 </td>
-            
+
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Link level="body-xs" component="button">
-                      Download
-                    </Link>
-                    <RowMenu />
+                    <RowMenu id={row.id}/>
                   </Box>
                 </td>
               </tr>

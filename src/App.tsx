@@ -9,8 +9,8 @@ import Sidebar from "./components/Sidebar";
 
 import LoginPage from "./pages/LoginPage";
 
-import { Provider, useDispatch, useSelector } from "react-redux";
-import store, { RootState } from "./store";
+import { useDispatch, useSelector } from "react-redux";
+import  { RootState } from "./store";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Link, Outlet, createBrowserRouter } from "react-router-dom";
 import Orgs from "./components/iam/Orgs";
@@ -31,6 +31,13 @@ import Namespaces from "./components/iam/Namespaces";
 import NamespaceTable from "./components/iam/NamespaceTable";
 import GroupCreator from "./components/iam/GroupCreator";
 import { setUserSession } from "./store/userinfo";
+import OrgCreator from "./components/iam/OrgCreator";
+import UserCreator from "./components/iam/UserCreator";
+import NamespaceCreator from "./components/iam/NamespaceCreator";
+import AuthorityUpdater from "./components/iam/AuthorityUpdater";
+import OrgUpdater from "./components/iam/OrgUpdater";
+import UserUpdater from "./components/iam/UserUpdater";
+import NamespaceUpdater from "./components/iam/NamespaceUpdater";
 
 
 export const paths = {
@@ -155,6 +162,22 @@ export const Routes = createBrowserRouter([
                   ),
                 },
               },
+              {
+                path: ":id",
+                element: <AuthorityUpdater />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      编辑
+                    </CrumbLink>
+                  ),
+                },
+              },
             ],
           },
           {
@@ -177,7 +200,7 @@ export const Routes = createBrowserRouter([
               },
               {
                 path: "create",
-                element: <AuthorityCreator />,
+                element: <OrgCreator />,
                 handle: {
                   crumb: () => (
                     <CrumbLink
@@ -187,6 +210,22 @@ export const Routes = createBrowserRouter([
                       aria-label="edit"
                     >
                       新建
+                    </CrumbLink>
+                  ),
+                },
+              },
+              {
+                path: ":id",
+                element: <OrgUpdater />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      编辑
                     </CrumbLink>
                   ),
                 },
@@ -213,7 +252,7 @@ export const Routes = createBrowserRouter([
               },
               {
                 path: "create",
-                element: <AuthorityCreator />,
+                element: <UserCreator />,
                 handle: {
                   crumb: () => (
                     <CrumbLink
@@ -223,6 +262,22 @@ export const Routes = createBrowserRouter([
                       aria-label="edit"
                     >
                       新建
+                    </CrumbLink>
+                  ),
+                },
+              },
+              {
+                path: ":id",
+                element: <UserUpdater />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      编辑
                     </CrumbLink>
                   ),
                 },
@@ -249,7 +304,7 @@ export const Routes = createBrowserRouter([
               },
               {
                 path: "create",
-                element: <AuthorityCreator />,
+                element: <NamespaceCreator />,
                 handle: {
                   crumb: () => (
                     <CrumbLink
@@ -259,6 +314,22 @@ export const Routes = createBrowserRouter([
                       aria-label="edit"
                     >
                       新建
+                    </CrumbLink>
+                  ),
+                },
+              },
+              {
+                path: ":id",
+                element: <NamespaceUpdater />,
+                handle: {
+                  crumb: () => (
+                    <CrumbLink
+                      underline="none"
+                      color="neutral"
+                      href="#"
+                      aria-label="edit"
+                    >
+                      编辑
                     </CrumbLink>
                   ),
                 },
